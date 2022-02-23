@@ -38,7 +38,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: NodePort   # Change to NoadPort for Ingress
+  type: LoadBalancer   # Change to NoadPort for Ingress
   port: 1337
 
 ingress:

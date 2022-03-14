@@ -1,6 +1,7 @@
 require('dotenv').config()
 
-const app = require("express")();
+const express = require("express");
+const app = express();
 const path = require("path");
 
 const cors = require("cors");
@@ -15,6 +16,7 @@ const razorpay = new Razorpay({
 });
 
 app.use(cors());
+app.use(express.json());
 
 // Serving company logo
 app.get("/logo.png", (req, res) => {
@@ -22,7 +24,6 @@ app.get("/logo.png", (req, res) => {
 });
 
 app.post("/razorpay", async (req, res) => {
-  console.log(req);
   // const payment_capture = 1;
   // const amount = 499;
   // const currency = "INR";
@@ -46,18 +47,19 @@ app.post("/razorpay", async (req, res) => {
   //   console.log(error);
   // }
  
+  console.log(req.body);
   const options ={
-    amount: 500,
+    amount: req.body.amount,
     currency: "INR",
     accept_partial: true,
-    first_min_partial_amount: 100,
+    first_min_partial_amount: 0,
     expire_by: 1691097057,
-    reference_id: "kadali7878",
+    reference_id: req.body.reference_id,
     description: "For XYZ purpose",
     customer: {
-      name: " Kumar",
-      email: "prasannakumar3333@gmail.com",
-      contact: "+918328418471"
+      name: "OTSI",
+      email: "otsi1123@gmail.com",
+      contact: req.body.contact
     },
     notify: {
       sms: true,
@@ -65,11 +67,13 @@ app.post("/razorpay", async (req, res) => {
     },
     reminder_enable: true,
     notes: {
-      policy_name: "Jeevan Bima"
+      policy_name: "Billing"
     },
     callback_url: "https://example-callback-url.com/",
     callback_method: "get"
   }
+
+  console.log(options);
 try {
   const response = await razorpay.paymentLink.create(options)
   console.log(response)
